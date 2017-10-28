@@ -3,21 +3,26 @@ import { db , auth} from '../../Firebase'
 export function getCircles(){
 return dispatch =>{
     let uid = auth.currentUser.uid;
-    db.ref(`users/${uid}/circles/`).on('child_added').then(snap=>{
-        console.log("Snap",snap)
-        let circle = {
-            key :snap.key,
-            circle:snap.val().circle,
-            type:snap.val().type,
-            members:snap.val().members || []
+    db.ref(`users/${uid}/circles/`).on('value',(snap)=>{
+        // console.log("Circle Action :",snap.val())
+        let circlesArray = [];
+        for(let circleObj in snap.val()){
+            let circle = {
+                key :circleObj,
+                circle:snap.val()[circleObj].circle,
+                type:snap.val()[circleObj].type,
+                members:snap.val()[circleObj].members || []
+            }
+           
+            circlesArray.push(circle)
+            
         }
-        dispatch(circle(circle));
-    }).catch(err =>{
-        dispatch(circleFail(err))
+        dispatch(circleGot(circlesArray));
+       
     })
 }
 }
-function circle(circle){
+function circleGot(circle){
     return {
          type:GOT_CIRCLE,
          payload:circle

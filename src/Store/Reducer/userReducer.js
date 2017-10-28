@@ -11,9 +11,9 @@ export let userReducer = (state = {}, action) => {
         }
         case SIGN_IN:
             {
-                console.log('====================================');
-                console.log("State",state);
-                console.log('====================================');
+                // console.log('====================================');
+                // console.log("State",state);
+                // console.log('====================================');
                 return Object.assign({}, state, {
                     user: {
                         currentUser: action.payload

@@ -22,20 +22,7 @@ export default class SignIn extends Component {
         title: 'Sign In'
     };
 
-    async componentWillMount() {
-
-        try {
-            let user = await AsyncStorage.getItem('currentUser')
-        } catch (err) {
-            console.log('====================================');
-            console.log("Error : ", err);
-            console.log('====================================');
-        }
-        // if (user) {     this         .props         .signIn(JSON.parse(user));
-        //  this.props.navigation.navigate('Circle') } if (this.props.user.currentUser)
-        // {     this         .props         .navigation         .navigate('Circle') }
-
-    }
+    componentWillMount() {}
     signIn() {
         let {email, password} = this.state,
             user = {
@@ -46,22 +33,22 @@ export default class SignIn extends Component {
         auth
             .signInWithEmailAndPassword(user.email, user.password)
             .then((res) => {
-                console.log('====================================');
-                console.log("Sign In ", res);
-                console.log('====================================');
-                // navigator.geolocation.requestAuthorization();
+                navigator
+                    .geolocation
+                    .watchPosition((position) => {
+                        db
+                            .ref(`users/${auth.currentUser.uid}`)
+                            .update({coords: position.coords})
+                            .then((res) => {})
+
+                    }, (err) => {}, {useSignificantChanges: true})
                 navigator
                     .geolocation
                     .getCurrentPosition((position) => {
-                        console.log('====================================');
-                        console.log("Position  ", position);
-                        console.log('====================================');
-
                         db
                             .ref(`users/${auth.currentUser.uid}`)
                             .update({coords: position.coords})
                             .then((res) => {
-
                                 this
                                     .props
                                     .signIn(res)
@@ -69,13 +56,9 @@ export default class SignIn extends Component {
                                     .props
                                     .navigation
                                     .navigate('Circle')
+                                this.setState({email: '', password: ''})
                             })
-
-                    }, (err) => {
-                        console.log('====================================');
-                        console.log("Error :", err.message);
-                        console.log('====================================');
-                    }, {
+                    }, (err) => {}, {
                         enableHighAccuracy: false,
                         timeout: 10000
                     })
@@ -83,12 +66,7 @@ export default class SignIn extends Component {
             .catch((err) => {
                 Alert.alert("Error Signinig In ", err.message)
             })
-
     }
-    SignOut() {
-        auth.signOut()
-    }
-
     render() {
         return (
             <View style={{
@@ -138,11 +116,7 @@ export default class SignIn extends Component {
                         </Text>
                     </TouchableHighlight>
                 </View>
-                {< Button title = "Sign Out" onPress = {
-                    () => {
-                        this.SignOut()
-                    }
-                } />}
+
             </View>
         )
     }

@@ -13,9 +13,9 @@ export function signUp  (user)  {
         auth
             .createUserWithEmailAndPassword(user.email, user.password)
             .then(res => {
-                console.log('====================================');
-                console.log("Responser : ", res);
-                console.log('====================================');
+                // console.log('====================================');
+                // console.log("Responser : ", res);
+                // console.log('====================================');
                 dispatch(signUpSucces(res))
             })
             .catch(err => {

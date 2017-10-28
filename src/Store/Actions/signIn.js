@@ -36,9 +36,10 @@ export function signIn (user)  {
                 //     })
                 // },{timeout:10000,enableHighAccuracy:false})
 
-                // dispatch(signInSucces(user));
+                AsyncStorage.setItem('currentUser',user);
+                dispatch(signInSucces(user));
             // }).catch(err => {
-            //     dispatch(signInError(err))
+                // dispatch(signInError(err))
             // })
 
     }
